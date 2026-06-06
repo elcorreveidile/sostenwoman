@@ -17,16 +17,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const handleStorageChange = (e: StorageEvent | Event) => {
       if ('key' in e && e.key === 'sostenwoman_cart_add') {
         handleAddItem()
-      } else if (!('key' in e)) {
-        loadCart()
       }
     }
 
     window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('cart-add-item', handleAddItem)
     window.addEventListener('cart-update', loadCart)
 
     return () => {
       window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('cart-add-item', handleAddItem)
       window.removeEventListener('cart-update', loadCart)
     }
   }, [])

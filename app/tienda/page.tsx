@@ -27,12 +27,16 @@ export default async function TiendaPage() {
         {products.map((product) => (
           <div key={product.id} className="border rounded-lg p-4">
             <Link href={`/tienda/${product.slug}`}>
-              <div className="aspect-square bg-stone-100 rounded mb-4 overflow-hidden">
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
+              <div className="aspect-square bg-stone-100 rounded mb-4 overflow-hidden flex items-center justify-center">
+                {product.images[0] ? (
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-stone-400 text-sm">Sin imagen</span>
+                )}
               </div>
             </Link>
             <Link href={`/tienda/${product.slug}`}>

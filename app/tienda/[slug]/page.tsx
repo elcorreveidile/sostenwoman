@@ -36,7 +36,10 @@ export default function ProductPage() {
   useEffect(() => {
     if (params.slug) {
       fetch(`/api/products/${params.slug}`)
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`)
+          return res.json()
+        })
         .then((data) => {
           setProduct(data)
           if (data.variants && data.variants.length > 0) {

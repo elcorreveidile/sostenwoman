@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 export default function AddToCartButton({
   variantId,
   productId,
@@ -17,6 +19,8 @@ export default function AddToCartButton({
   color: string
   image: string
 }) {
+  const [added, setAdded] = useState(false)
+
   const addToCart = () => {
     const item = {
       variantId,
@@ -29,16 +33,21 @@ export default function AddToCartButton({
       quantity: 1,
     }
     localStorage.setItem('sostenwoman_cart_add', JSON.stringify(item))
-    window.dispatchEvent(new Event('storage'))
-    alert('Añadido al carrito')
+    window.dispatchEvent(new CustomEvent('cart-add-item'))
+    setAdded(true)
+    setTimeout(() => setAdded(false), 2000)
   }
 
   return (
     <button
       onClick={addToCart}
-      className="w-full mt-2 bg-stone-900 text-white py-2 rounded hover:bg-stone-800"
+      className={`w-full mt-2 py-2 rounded transition-colors ${
+        added
+          ? 'bg-green-600 text-white'
+          : 'bg-stone-900 text-white hover:bg-stone-800'
+      }`}
     >
-      Añadir al carrito
+      {added ? '✓ Añadido' : 'Añadir al carrito'}
     </button>
   )
 }
