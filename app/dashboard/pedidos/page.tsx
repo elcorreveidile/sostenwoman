@@ -123,8 +123,7 @@ export default function AdminOrdersPage() {
         {orders.length === 0 && (
           <div className="p-8 text-center text-stone-500">No hay pedidos</div>
         )}
-      </table>
+      </div>
     </div>
-  </div>
-)
+  )
 }
