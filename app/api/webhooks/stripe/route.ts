@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       case 'checkout.session.completed': {
         const session = event.data.object
 
-        if (session.payment_status !== 'unpaid') {
+        if (session.payment_status === 'paid') {
           // Obtener la orden
           const order = await prisma.order.findUnique({
             where: { stripeSessionId: session.id },
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
               subject: 'Confirmación de pedido - SostenWoman',
               html: `
                 <h1>Tu pedido ha sido confirmado</h1>
-                <p>Hola ${order.user.name || 'Cliente'},</p>
+                <p>Hola ${order.user.name || [order.user.firstName, order.user.lastName].filter(Boolean).join(' ') || 'Cliente'},</p>
                 <p>Tu pedido #${order.id} ha sido recibido y está siendo procesado.</p>
                 <p><strong>Total:</strong> ${order.total.toFixed(2)}€</p>
                 <p>Te notificaremos cuando tu pedido sea enviado.</p>

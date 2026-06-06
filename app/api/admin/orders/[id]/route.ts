@@ -10,7 +10,7 @@ const updateSchema = z.object({
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth()
 
@@ -18,19 +18,19 @@ export async function GET(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const { id } = await params
+
   try {
     const order = await prisma.order.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         user: {
-          select: { name: true, email: true, phone: true },
+          select: { name: true, firstName: true, lastName: true, email: true, phone: true },
         },
         items: {
           include: {
             variant: {
-              include: {
-                product: true,
-              },
+              include: { product: true },
             },
           },
         },
@@ -50,7 +50,7 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth()
 
@@ -58,12 +58,14 @@ export async function PATCH(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const { id } = await params
+
   try {
     const body = await req.json()
     const data = updateSchema.parse(body)
 
     const order = await prisma.order.update({
-      where: { id: params.id },
+      where: { id },
       data,
     })
 

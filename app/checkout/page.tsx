@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { auth } from '@/lib/auth'
+import { useSession } from 'next-auth/react'
 import type { CartItem } from '@/types/cart'
 
 type Address = {
@@ -20,7 +20,7 @@ type Address = {
 export default function CheckoutPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [session, setSession] = useState<any>(null)
+  const { data: session, status } = useSession()
   const [items, setItems] = useState<CartItem[]>([])
   const [addresses, setAddresses] = useState<Address[]>([])
   const [selectedAddress, setSelectedAddress] = useState<string>('')
@@ -28,35 +28,31 @@ export default function CheckoutPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    auth().then((sess) => {
-      if (!sess) {
-        router.push('/login?redirect=/checkout')
-        return
-      }
-      setSession(sess)
+    if (status === 'loading') return
+    if (!session) {
+      router.push('/login?redirect=/checkout')
+      return
+    }
 
-      // Cargar direcciones
-      fetch('/api/addresses')
-        .then((res) => res.json())
-        .then((data) => {
-          setAddresses(data)
-          const def = data.find((a: Address) => a.isDefault)
-          if (def) setSelectedAddress(def.id)
-        })
-        .catch(console.error)
+    // Cargar direcciones
+    fetch('/api/addresses')
+      .then((res) => res.json())
+      .then((data) => {
+        setAddresses(data)
+        const def = data.find((a: Address) => a.isDefault)
+        if (def) setSelectedAddress(def.id)
+      })
+      .catch(console.error)
 
-      // Cargar carrito
-      const cartStr = sessionStorage.getItem('checkout_cart')
-      if (cartStr) {
-        setItems(JSON.parse(cartStr))
-      } else {
-        const cart = localStorage.getItem('sostenwoman_cart')
-        if (cart) {
-          setItems(JSON.parse(cart))
-        }
-      }
-    })
-  }, [router])
+    // Cargar carrito
+    const cartStr = sessionStorage.getItem('checkout_cart')
+    if (cartStr) {
+      setItems(JSON.parse(cartStr))
+    } else {
+      const cart = localStorage.getItem('sostenwoman_cart')
+      if (cart) setItems(JSON.parse(cart))
+    }
+  }, [session, status, router])
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const shipping = 9.99
@@ -101,7 +97,7 @@ export default function CheckoutPage() {
     }
   }
 
-  if (!session || items.length === 0) {
+  if (status === 'loading' || (!session && status !== 'unauthenticated')) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="text-center">Cargando...</div>

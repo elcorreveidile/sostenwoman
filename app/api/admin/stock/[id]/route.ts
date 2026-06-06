@@ -9,7 +9,7 @@ const updateSchema = z.object({
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth()
 
@@ -18,11 +18,12 @@ export async function PATCH(
   }
 
   try {
+    const { id } = await params
     const body = await req.json()
     const data = updateSchema.parse(body)
 
     const variant = await prisma.variant.update({
-      where: { id: params.id },
+      where: { id },
       data: { stock: data.stock },
     })
 

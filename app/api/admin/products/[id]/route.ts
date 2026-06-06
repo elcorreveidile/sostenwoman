@@ -15,7 +15,7 @@ const updateSchema = z.object({
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth()
 
@@ -23,12 +23,14 @@ export async function PATCH(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const { id } = await params
+
   try {
     const body = await req.json()
     const data = updateSchema.parse(body)
 
     const product = await prisma.product.update({
-      where: { id: params.id },
+      where: { id },
       data,
     })
 
@@ -44,7 +46,7 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth()
 
@@ -52,10 +54,11 @@ export async function DELETE(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const { id } = await params
+
   try {
-    // Archivar (soft delete) en lugar de borrar
     await prisma.product.update({
-      where: { id: params.id },
+      where: { id },
       data: { active: false },
     })
 
