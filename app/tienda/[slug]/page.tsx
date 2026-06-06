@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { ShoppingCart, Check } from 'lucide-react'
 
@@ -107,25 +106,27 @@ export default function ProductPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Galería */}
         <div className="space-y-4">
-          <div className="aspect-square relative bg-stone-100 rounded-lg overflow-hidden">
-            <Image
-              src={product.images[0] || '/placeholder.jpg'}
-              alt={product.name}
-              fill
-              className="object-cover"
-              priority
-            />
+          <div className="aspect-square bg-stone-100 rounded-lg overflow-hidden flex items-center justify-center relative">
+            {product.images[0] && (
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={(e) => { e.currentTarget.style.display = 'none' }}
+              />
+            )}
+            <span className="text-stone-400 text-sm">Sin imagen</span>
           </div>
 
           {product.images.length > 1 && (
             <div className="grid grid-cols-4 gap-4">
               {product.images.slice(1, 5).map((image, idx) => (
-                <div key={idx} className="aspect-square relative bg-stone-100 rounded-md overflow-hidden">
-                  <Image
+                <div key={idx} className="aspect-square bg-stone-100 rounded-md overflow-hidden flex items-center justify-center relative">
+                  <img
                     src={image}
                     alt={`${product.name} ${idx + 2}`}
-                    fill
-                    className="object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
+                    onError={(e) => { e.currentTarget.style.display = 'none' }}
                   />
                 </div>
               ))}
