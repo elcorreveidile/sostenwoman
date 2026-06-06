@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
-import Image from 'next/image'
 import Link from 'next/link'
 import AddToCartButton from '@/components/AddToCartButton'
+import ProductImage from '@/components/ProductImage'
 
 async function getProducts() {
   const products = await prisma.product.findMany({
@@ -27,16 +27,8 @@ export default async function TiendaPage() {
         {products.map((product) => (
           <div key={product.id} className="border rounded-lg p-4">
             <Link href={`/tienda/${product.slug}`}>
-              <div className="aspect-square bg-stone-100 rounded mb-4 overflow-hidden flex items-center justify-center relative">
-                {product.images[0] && (
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    onError={(e) => { e.currentTarget.style.display = 'none' }}
-                  />
-                )}
-                <span className="text-stone-400 text-sm">Sin imagen</span>
+              <div className="aspect-square bg-stone-100 rounded mb-4 overflow-hidden">
+                <ProductImage src={product.images[0]} alt={product.name} />
               </div>
             </Link>
             <Link href={`/tienda/${product.slug}`}>
