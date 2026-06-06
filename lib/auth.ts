@@ -1,25 +1,33 @@
 import NextAuth from 'next-auth'
 import EmailProvider from 'next-auth/providers/email'
 import { prisma } from './prisma'
-import { RedirectType } from 'next/navigation'
+import { resend, emailFrom } from './resend'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     EmailProvider({
-      server: process.env.RESEND_API_KEY ? {
-        host: 'smtp.resend.com',
-        port: 587,
-        auth: {
-          user: 'resend',
-          pass: process.env.RESEND_API_KEY,
-        },
-      } : '',
-      from: process.env.EMAIL_FROM || 'noreply@sostenwoman.com',
+      from: emailFrom,
+      sendVerificationRequest: async ({ identifier, url }) => {
+        if (resend) {
+          await resend.emails.send({
+            from: emailFrom,
+            to: identifier,
+            subject: 'Tu acceso a SostenWoman',
+            html: `
+              <p>Haz clic en el siguiente enlace para acceder a tu cuenta:</p>
+              <p><a href="${url}" style="background:#1c1917;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block">Acceder a SostenWoman</a></p>
+              <p style="color:#888;font-size:12px">Si no solicitaste este acceso, ignora este email.</p>
+            `,
+          })
+        } else {
+          // Sin RESEND_API_KEY: imprime el enlace en la terminal para desarrollo local
+          console.log(`\n🔗  MAGIC LINK (modo desarrollo)\n    Email: ${identifier}\n    URL:   ${url}\n`)
+        }
+      },
     }),
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Si viene de una página específica, ir allí
       if (url.startsWith('/')) return `${baseUrl}${url}`
       if (new URL(url).origin === baseUrl) return url
       return baseUrl
@@ -31,23 +39,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         })
 
         if (!existing) {
-          // Usuario no existe - necesita completar perfil
-          // Creamos un registro temporal con el email
           await prisma.user.create({
             data: {
               email,
               role: 'CLIENT',
             },
           })
-
-          // Redirigir a completar perfil
           return '/completar-perfil'
         }
 
-        // Usuario existe - redirigir según rol
-        if (existing.role === 'ADMIN') {
-          return '/dashboard'
-        }
+        if (existing.role === 'ADMIN') return '/dashboard'
         return '/tienda'
       }
       return true
@@ -77,3 +78,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: 'jwt',
   },
 })
+
