@@ -14,7 +14,11 @@ export function Nav() {
     const updateCart = () => setCartCount(cartUtils.getTotalItems())
     updateCart()
     window.addEventListener('storage', updateCart)
-    return () => window.removeEventListener('storage', updateCart)
+    window.addEventListener('cart-update', updateCart)
+    return () => {
+      window.removeEventListener('storage', updateCart)
+      window.removeEventListener('cart-update', updateCart)
+    }
   }, [])
 
   return (
