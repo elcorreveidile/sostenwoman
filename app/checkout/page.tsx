@@ -85,10 +85,8 @@ export default function CheckoutPage() {
       const data = await res.json()
 
       // Redirigir a Stripe Checkout
-      const stripe = (await import('@stripe/stripe-js')).loadStripe(
-        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''
-      )
-      const stripeInstance = await stripe
+      const { loadStripe } = await import('@stripe/stripe-js')
+      const stripeInstance = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
       await stripeInstance?.redirectToCheckout({ sessionId: data.sessionId })
     } catch (err: any) {
       setError(err.message)
