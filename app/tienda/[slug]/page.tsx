@@ -2,6 +2,9 @@ import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import ProductDetail from '@/components/ProductDetail'
 
+// No prerenderizar en build time - requiere DATABASE_URL
+export const dynamic = 'force-dynamic'
+
 export default async function ProductPage({
   params,
 }: {

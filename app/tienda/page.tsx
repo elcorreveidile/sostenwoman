@@ -3,6 +3,9 @@ import Link from 'next/link'
 import AddToCartButton from '@/components/AddToCartButton'
 import ProductImage from '@/components/ProductImage'
 
+// No prerenderizar en build time - requiere DATABASE_URL
+export const dynamic = 'force-dynamic'
+
 async function getProducts() {
   const products = await prisma.product.findMany({
     where: { active: true },
