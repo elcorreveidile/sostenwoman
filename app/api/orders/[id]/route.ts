@@ -3,6 +3,12 @@ import { prisma } from '@/lib/prisma'
 import { stripe } from '@/lib/stripe'
 import { auth } from '@/lib/auth'
 
+type SessionUser = {
+  id: string
+  email: string
+  role?: string
+}
+
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -15,13 +21,14 @@ export async function GET(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const userId = (session.user as SessionUser).id
   const { id } = await params
 
   try {
     const order = await prisma.order.findFirst({
       where: {
         id,
-        userId: session.user.id,
+        userId,
       },
       include: {
         items: {

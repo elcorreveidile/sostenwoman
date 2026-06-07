@@ -4,6 +4,12 @@ import { stripe } from '@/lib/stripe'
 import { auth } from '@/lib/auth'
 import { config } from '@/lib/config'
 
+type SessionUser = {
+  id: string
+  email: string
+  role?: string
+}
+
 export async function POST(req: Request) {
   try {
     const session = await auth()
@@ -11,6 +17,8 @@ export async function POST(req: Request) {
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const userId = (session.user as SessionUser).id
 
     const { items, addressId } = await req.json()
 
@@ -20,7 +28,7 @@ export async function POST(req: Request) {
 
     // Obtener el usuario con direcciones
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: userId },
       include: { addresses: true },
     })
 
