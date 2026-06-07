@@ -3,6 +3,29 @@ import EmailProvider from 'next-auth/providers/email'
 import { prisma } from './prisma'
 import { resend, emailFrom } from './resend'
 
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string
+      email: string
+      role?: string
+    }
+  }
+  interface User {
+    id: string
+    email: string
+    role?: string
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id: string
+    email: string
+    role?: string
+  }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     EmailProvider({
@@ -58,15 +81,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id
         token.email = user.email
-        token.role = (user as any).role
+        token.role = user.role
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).id = token.id
-        (session.user as any).email = token.email
-        (session.user as any).role = token.role
+        session.user.id = token.id
+        session.user.email = token.email
+        session.user.role = token.role
       }
       return session
     },
