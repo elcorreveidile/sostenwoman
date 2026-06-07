@@ -1,5 +1,14 @@
 import 'dotenv/config'
 import { prisma } from '../lib/prisma'
+import { Size } from '@prisma/client'
+
+type VariantData = {
+  size: Size
+  color: string
+  colorHex: string
+  stock: number
+  sku: string
+}
 
 async function main() {
   console.log('🌱 Starting seed...')
@@ -169,7 +178,7 @@ async function main() {
       data: {
         ...product,
         variants: {
-          create: variants,
+          create: variants as VariantData[],
         },
       },
       include: { variants: true },
