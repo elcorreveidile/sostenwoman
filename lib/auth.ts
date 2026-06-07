@@ -31,6 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     EmailProvider({
       from: emailFrom,
+      server: {}, // Config vacía para nodemailer (usamos Resend vía sendVerificationRequest)
       sendVerificationRequest: async ({ identifier, url }) => {
         if (resend) {
           await resend.emails.send({
