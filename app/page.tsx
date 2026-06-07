@@ -26,7 +26,7 @@ export default function Home() {
               href="/about"
               className="inline-flex items-center justify-center px-8 py-3 bg-white text-stone-900 border border-stone-300 rounded-full hover:bg-stone-50 transition-colors font-medium"
             >
-              Conoce Nosotros
+              Conócenos
             </Link>
           </div>
         </div>
