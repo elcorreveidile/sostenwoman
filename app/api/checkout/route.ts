@@ -154,7 +154,7 @@ export async function POST(req: Request) {
       data: { stripeSessionId: stripeSession.id },
     })
 
-    return NextResponse.json({ sessionId: stripeSession.id, orderId: order.id })
+    return NextResponse.json({ sessionId: stripeSession.id, orderId: order.id, checkoutUrl: stripeSession.url })
   } catch (error) {
     console.error('Error creating checkout session:', error)
     return NextResponse.json({ error: 'Error creating checkout session' }, { status: 500 })

@@ -83,11 +83,14 @@ export default function CheckoutPage() {
       }
 
       const data = await res.json()
+      const { checkoutUrl } = data
 
       // Redirigir a Stripe Checkout
-      const { loadStripe } = await import('@stripe/stripe-js')
-      const stripeInstance = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
-      await stripeInstance?.redirectToCheckout({ sessionId: data.sessionId })
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl
+      } else {
+        throw new Error('No se recibió la URL de checkout')
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
