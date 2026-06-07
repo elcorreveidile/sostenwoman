@@ -4,6 +4,7 @@ import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CartProvider } from "@/components/CartContext";
+import { SampleBadge } from "@/components/SampleBadge";
 import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({
@@ -29,6 +30,7 @@ export default function RootLayout({
             <Nav />
             <main className="flex-1">{children}</main>
             <Footer />
+            <SampleBadge />
           </CartProvider>
         </SessionProvider>
       </body>
