@@ -44,7 +44,7 @@ export function Nav() {
                 pathname === '/about' ? 'text-stone-900' : 'text-stone-500'
               }`}
             >
-              Nosotros
+              Conócenos
             </Link>
           </div>
 

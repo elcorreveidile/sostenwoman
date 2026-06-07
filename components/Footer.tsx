@@ -50,8 +50,19 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-stone-800 mt-8 pt-8 text-center text-sm text-stone-500">
+        <div className="border-t border-stone-800 mt-8 pt-8 text-center text-sm text-stone-500 space-y-2">
           <p>&copy; {new Date().getFullYear()} SostenWoman. Todos los derechos reservados.</p>
+          <p>
+            Desarrollado por{' '}
+            <a
+              href="https://www.por2duros.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-stone-100 transition-colors"
+            >
+              Por 2 duros
+            </a>
+          </p>
         </div>
       </div>
     </footer>
