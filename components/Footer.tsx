@@ -22,7 +22,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/about" className="hover:text-stone-100 transition-colors">
-                  Nosotros
+                  Conócenos
                 </Link>
               </li>
             </ul>
