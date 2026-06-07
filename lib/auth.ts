@@ -33,15 +33,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return baseUrl
     },
     async signIn({ user, email }) {
-      if (email) {
+      const userEmail = user.email
+      if (userEmail) {
         const existing = await prisma.user.findUnique({
-          where: { email: email },
+          where: { email: userEmail },
         })
 
         if (!existing) {
           await prisma.user.create({
             data: {
-              email,
+              email: userEmail,
               role: 'CLIENT',
             },
           })
