@@ -54,7 +54,7 @@ export async function GET(
         const stripeSession = await stripe.checkout.sessions.retrieve(sessionId)
         verified =
           stripeSession.payment_status === 'paid' &&
-          stripeSession.metadata.orderId === order.id
+          stripeSession.metadata?.orderId === order.id
       } catch (err) {
         console.error('Error verifying Stripe session:', err)
       }
