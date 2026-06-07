@@ -37,7 +37,7 @@ export async function PATCH(
     return NextResponse.json(product)
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors[0].message }, { status: 400 })
+      return NextResponse.json({ error: error.issues[0].message }, { status: 400 })
     }
     console.error('Error updating product:', error)
     return NextResponse.json({ error: 'Error updating product' }, { status: 500 })
