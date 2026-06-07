@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import type { CartItem } from '@/types/cart'
@@ -17,7 +17,7 @@ type Address = {
   isDefault: boolean
 }
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { data: session, status } = useSession()
@@ -242,5 +242,13 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="max-w-4xl mx-auto px-4 py-16">Cargando...</div>}>
+      <CheckoutContent />
+    </Suspense>
   )
 }
