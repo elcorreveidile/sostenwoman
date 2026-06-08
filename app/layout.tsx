@@ -15,6 +15,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "SostenWoman - Moda Sostenible",
   description: "Tienda de moda sostenible con prendas conscientes y éticas",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.svg", type: "image/svg+xml", sizes: "180x180" },
+    ],
+  },
 };
 
 export default function RootLayout({
